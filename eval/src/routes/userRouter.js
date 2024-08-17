@@ -57,7 +57,7 @@ userRouter.post('/login',async(req,res)=>{
                     if(err){
                         return res.status(400).json({message:'An error has occurred . Please try again later'})
                     }
-                    return res.status(200).json({token:token})
+                    return res.status(200).json({token:token,user:check._id})
                 })
             }else{
                 return res.status(400).json({message:'Email address and password do not match'})

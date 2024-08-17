@@ -38,5 +38,12 @@ eventRouter.delete('/:id',async(req,res)=>{
         return res.status(500).json({message:'Internal server error'})
     }
 })
-
+eventRouter.get('/all',async(req,res)=>{
+    try{
+        const event=await eventModel.find({user:{$ne:req.user._id}}).populate('user','email phone image')
+        return res.status(200).send(event)
+    }catch(err){
+        return res.status(500).json({message:'Internal server error'})
+    }
+})
 module.exports=eventRouter

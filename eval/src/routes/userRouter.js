@@ -6,6 +6,7 @@ const key="#479@/^5149*@123"
 const multer  = require('multer')
 const userModel = require('../models/userModel')
 const eventModel = require('../models/EventModel')
+const auth = require('../middleware/auth')
 const storage = multer.diskStorage({
     destination: function (req, file, cb) {
       cb(null, 'uploads')
@@ -66,15 +67,9 @@ userRouter.post('/login',async(req,res)=>{
         return res.status(500).json({message:'Internal server error'})
     }
 })
-userRouter.post('/logout',async(req,res)=>{
-    const token=req.headers.authorization.split(' ')[1]
+userRouter.get('/logout',auth,async(req,res)=>{
     try{
-        if(token){
-            blackList.add(token)
             return res.status(200).json({message:'Logout successful'})
-        }else{
-            return res.status(404).json({message:'Token not found'})
-        }
     }catch(err){
         return res.status(500).json({message:'Internal server error'})
     }

@@ -103,4 +103,26 @@ userRouter.delete('/:id',async(req,res)=>{
         return res.status(500).json({message:'Internal server error'})
     }
 })
+userRouter.get('/admin-route',async(req,res)=>{
+    try{
+        const user=await userModel.find({role:{$ne:roles.admin}})
+        return res.status(200).send(user)
+    }catch(err){
+        return res.status(500).json({message:'Internal server error'})
+    }
+})
+userRouter.patch('/update-role/:id',async(req,res)=>{
+    const {id}=req.params
+    const {role}=req.body
+    try{
+        const user=await userModel.findById(id)
+        if(!user){
+            return res.status(404).json({message:'User not found'})
+        }
+        await userModel.findByIdAndUpdate(id,{role:role},{new:true})
+        return res.status(200).json({message:`User role has been updated`})
+    }catch(err){
+        return res.status(500).json({message:'Internal server error'})
+    }
+})
 module.exports=userRouter

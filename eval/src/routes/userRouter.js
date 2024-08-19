@@ -7,6 +7,7 @@ const multer  = require('multer')
 const userModel = require('../models/userModel')
 const eventModel = require('../models/EventModel')
 const auth = require('../middleware/auth')
+const { roles } = require('../utils/constant')
 const storage = multer.diskStorage({
     destination: function (req, file, cb) {
       cb(null, 'uploads')
@@ -24,6 +25,7 @@ userRouter.post('/register',upload.single('avatar'),async(req,res)=>{
         if(check){
             return res.status(400).json({message:'User already exists. Please login'})
         }
+        const role=email==='admin@gmail.com' ? roles.admin : roles.user
         bcrypt.hash(password, 8, async(err, hash)=> {
             if(err){
                 return res.status(400).json({message:'An error occurred. Please try again later'})
@@ -32,7 +34,8 @@ userRouter.post('/register',upload.single('avatar'),async(req,res)=>{
                 email:email,
                 password:hash,
                 phone:phone,
-                image:req.file.path
+                image:req.file.path,
+                role:role
             })
             return res.status(201).json({message:'Signup successfull.Login to see events',user})
         });
@@ -47,6 +50,9 @@ userRouter.post('/login',async(req,res)=>{
         if(!check){
             return res.status(400).json({message:'User does not exist. Please signup'})
         }
+        if(!check.activity){
+            return res.status(403).json({message:'You have been disabled by admin.'})
+        }
         bcrypt.compare(password, check.password, async(err, result)=> {
             if(err){
                 return res.status(400).json({message:'An error occurred while verifying password. Try again later'})
@@ -57,7 +63,7 @@ userRouter.post('/login',async(req,res)=>{
                     if(err){
                         return res.status(400).json({message:'An error has occurred . Please try again later'})
                     }
-                    return res.status(200).json({token:token,user:check._id})
+                    return res.status(200).json({token:token,user:check._id,role:check.role})
                 })
             }else{
                 return res.status(400).json({message:'Email address and password do not match'})

@@ -13,7 +13,7 @@ const registerLimiter = rateLimit({
   
 eventRouter.get('/',async(req,res)=>{
     try{
-        const event=await eventModel.find({user:req.user._id}).populate('user','email phone image')
+        const event=await eventModel.find({user:req.user._id}).populate('user','email phone image activity role')
         return res.status(200).send(event)
     }catch(err){
         return res.status(500).json({message:'Internal server error'})
@@ -48,7 +48,7 @@ eventRouter.delete('/:id',async(req,res)=>{
 })
 eventRouter.get('/all',async(req,res)=>{
     try{
-        const event=await eventModel.find({user:{$ne:req.user._id}}).populate('user','email phone image')
+        const event=await eventModel.find({user:{$ne:req.user._id}}).populate('user','email phone image activity role')
         return res.status(200).send(event)
     }catch(err){
         return res.status(500).json({message:'Internal server error'})
@@ -73,7 +73,7 @@ eventRouter.get('/register-event/:id', registerLimiter, async (req, res) => {
         await event.save();
         
         const registeredEvents = await eventModel.find({ registeredUsers: req.user._id })
-            .populate('user', 'email phone image');
+            .populate('user', 'email phone image activity role');
         return res.status(200).json(registeredEvents);
     } catch (err) {
         console.error('Error registering for event:', err);

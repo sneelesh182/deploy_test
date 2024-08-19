@@ -9,7 +9,7 @@ const options = {
     },
     servers:[
         {
-            url:'http://localhost:3000',
+            url:'https://deploy-test-msnv.onrender.com',
             description:'Event Management App'
         }
     ]

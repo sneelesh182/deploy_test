@@ -11,6 +11,112 @@ const registerLimiter = rateLimit({
     keyGenerator: (req) => req.user._id.toString() // use user ID as key
   });
   
+/**
+ * @swagger
+ * components:
+ *   schemas:
+ *     Event:
+ *       type: object
+ *       required:
+ *         - title
+ *         - price
+ *         - capacity
+ *       properties:
+ *         title:
+ *           type: string
+ *           description: Title of the event
+ *         price:
+ *           type: number
+ *           description: Price of the event
+ *         capacity: 
+ *           type: number
+ *           description: Capacity of the event
+ */
+
+/**
+ * @swagger
+ * components: 
+ *   parameters:
+ *     EventName:
+ *       in: query
+ *       name: eventName
+ *       required: true
+ *       schema: 
+ *         type: string
+ *         format: text
+ *         description: Name of the event
+ *     EventPrice:
+ *       in: query
+ *       name: price
+ *       required: true
+ *       schema:
+ *         type: number
+ *         format: number
+ *         description: Price of the event
+ * 
+ */
+
+/**
+ * @swagger
+ * /userEvent:
+ *   post:
+ *     tags: [Event]
+ *     summary: Create an event
+ *     requestBody:
+ *       required: true
+ *       content: 
+ *         application/json:
+ *           schema:
+ *             $ref: '#/components/schemas/Event'
+ *     responses:
+ *       201:
+ *         description: Event created successfully
+ *       500:
+ *         description: internal server error
+ */
+
+/**
+ * @swagger
+ * /userEvent:
+ *   get:
+ *     tags: [Event]
+ *     summary: Show all the events of logged in user
+ *     requestBody:
+ *       required: true
+ *       content: 
+ *         application/json:
+ *           schema:
+ *             $ref: '#/components/schemas/Event'
+ *     responses:
+ *       200:
+ *         description: shows all events successfully
+ *       400:
+ *         description: could not fetch events
+ *       500:
+ *         description: internal server error
+ */
+
+/**
+ * @swagger
+ * /userEvent/all:
+ *   get:
+ *     tags: [Event]
+ *     summary: Shows all events by other users
+ *     requestBody:
+ *       required: true
+ *       content: 
+ *         application/json:
+ *           schema:
+ *             $ref: '#/components/schemas/Event'
+ *     responses:
+ *       200:
+ *         description: shows all events successfully
+ *       400:
+ *         description: could not fetch events
+ *       500:
+ *         description: internal server error
+ */
+
 eventRouter.get('/',async(req,res)=>{
     try{
         const event=await eventModel.find({user:req.user._id}).populate('user','email phone image activity role')

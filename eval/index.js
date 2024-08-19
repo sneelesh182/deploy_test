@@ -15,6 +15,10 @@ app.use(
 );
 const cors = require("cors");
 app.use(cors());
+const swaggerUi = require('swagger-ui-express');
+const swaggerSpec=require('./src/swagger')
+app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerSpec));
+
 const connectDB = require("./src/configs/mongoose");
 const auth = require("./src/middleware/auth");
 const userRouter = require("./src/routes/userRouter");

@@ -18,6 +18,115 @@ const storage = multer.diskStorage({
   })
   
   const upload = multer({ storage: storage })
+
+/**
+ * @swagger
+ * components:
+ *   schemas:
+ *     User:
+ *       type: object
+ *       required:
+ *         - email
+ *         - password
+ *         - image
+ *       properties:
+ *         email:
+ *           type: string
+ *           description: Email address of the user
+ *         password:
+ *           type: string
+ *           description: Password of the user
+ *         image: 
+ *           type: string
+ *           description: Image of the user
+ */
+
+/**
+ * @swagger
+ * components: 
+ *   parameters:
+ *     UserEmail:
+ *       in: query
+ *       name: email
+ *       required: true
+ *       schema: 
+ *         type: string
+ *         format: email
+ *         description: Email of the user
+ *     UserPassword:
+ *       in: query
+ *       name: password
+ *       required: true
+ *       schema:
+ *         type: string
+ *         format: password
+ *         description: Password of the user
+ * 
+ */
+
+/**
+ * @swagger
+ * /user/register:
+ *   post:
+ *     tags: [Users]
+ *     summary: Register the user
+ *     requestBody:
+ *       required: true
+ *       content: 
+ *         application/json:
+ *           schema:
+ *             $ref: '#/components/schemas/User'
+ *     responses:
+ *       201:
+ *         description: user registered successfully
+ *       400:
+ *         description: already a user
+ *       500:
+ *         description: internal server error
+ */
+
+/**
+ * @swagger
+ * /user/login:
+ *   post:
+ *     tags: [Users]
+ *     summary: Login the user
+ *     requestBody:
+ *       required: true
+ *       content: 
+ *         application/json:
+ *           schema:
+ *             $ref: '#/components/schemas/User'
+ *     responses:
+ *       200:
+ *         description: user logins successfully
+ *       400:
+ *         description: not a user. signup first
+ *       500:
+ *         description: internal server error
+ */
+
+/**
+ * @swagger
+ * /user/logout:
+ *   post:
+ *     tags: [Users]
+ *     summary: Logout the user
+ *     requestBody:
+ *       required: true
+ *       content: 
+ *         application/json:
+ *           schema:
+ *             $ref: '#/components/schemas/User'
+ *     responses:
+ *       200:
+ *         description: user logged out successfully
+ *       400:
+ *         description: could not logout
+ *       500:
+ *         description: internal server error
+ */
+
 userRouter.post('/register',upload.single('avatar'),async(req,res)=>{
     const {email,password,phone}=req.body
     try{

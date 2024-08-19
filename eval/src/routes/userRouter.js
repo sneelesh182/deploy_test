@@ -125,4 +125,18 @@ userRouter.patch('/update-role/:id',async(req,res)=>{
         return res.status(500).json({message:'Internal server error'})
     }
 })
+userRouter.patch('/toggle-activity/:id',async(req,res)=>{
+    const {id}=req.params
+    try{
+        const user=await userModel.findById(id)
+        if(!user){
+            return res.status(404).json({message:'User not found'})
+        }
+        user.activity=!user.activity
+        await user.save()
+        return res.status(200).json({message:`User has been ${user.activity ? 'Enabled' : 'Disabled'}`})
+    }catch(err){
+        return res.status(500).json({message:'Internal server error'})
+    }
+})
 module.exports=userRouter
